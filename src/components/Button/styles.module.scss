@@ -1,0 +1,54 @@
+.button {
+  &.buttonOutlined {
+    background-color: var(--primary);
+    border-radius: 6px;
+    border: 1px solid transparent;
+    color: var(--white);
+    font-size: 14px;
+    font-weight: 500;
+    text-transform: none;
+  }
+
+  &.textButton {
+    color: var(--text);
+    font-size: 12px;
+    text-transform: none;
+    
+    &:hover {
+      border: none;
+    }
+  }
+
+  &.buttonSizeLarge {
+    padding: 20px 30px;
+  }
+
+  &.butonSizeMedium {
+    padding: 20px 24px;
+  }
+
+  .progressBar {
+    position: absolute;
+  }
+
+  .loading {
+    background-color: var(--red);
+  }
+}
+
+.secondary {
+  &.buttonOutlined {
+    background-color: var(--secondary);
+    border-radius: 5px;
+    border: 1px solid transparent;
+    color: var(--white);
+    font-size: 14px;
+    font-weight: 500;
+    text-transform: none;
+
+    &:hover {
+      background-color: var(--blue-secondary);
+      border: 1px solid transparent;
+    }
+  }
+}
