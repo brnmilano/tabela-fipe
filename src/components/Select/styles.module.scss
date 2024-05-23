@@ -1,74 +1,36 @@
-@import "../../styles/breakpoints";
-
 .container {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  justify-content: center;
   width: 100%;
-  gap: 0.5rem;
+  gap: 6px;
   position: relative;
+  cursor: pointer;
 
-  &:focus-visible {
-    outline: none;
-  }
 
-  .inputWrapper {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-
-    .input {
-      position: relative;
-      width: 100%;
-
-      > div {
-        min-height: 46px !important;
-        font-size: 1rem !important;
-      }
-
-      span {
-        display: none;
-      }
-    }
-  }
-
-  label {
-    font-weight: bold;
-    font-size: 0.875rem;
-  }
-
-  .inputError {
-    border: 1px solid var(--red) !important;
+  .label {
+    font-weight: 500;
+    color: var(--black);
+    font-size: 12px;
+    cursor: pointer;
+    width: fit-content;
+    white-space: nowrap;
   }
 
   .errorMessage {
     color: var(--red);
-    margin-top: -5px;
+    position: absolute;
+    bottom: -15px;
+    left: 4px;
+    font-size: 12px;
+    margin-top: 8px;
+    font-weight: 500;
     visibility: hidden;
     opacity: 0;
-    transition:
-      visibility 0.5s,
-      opacity 0.5s linear;
-    position: absolute;
-    bottom: -20px;
-    font-size: 0.75rem;
+    transition: visibility 0s, opacity 0.5s linear;
   }
 
-  .showingErrorMessage {
+  .showErrorMessage {
     visibility: visible;
     opacity: 1;
-  }
-}
-
-// Estilos para tablets
-@include media-md {
-}
-
-// Estilos para desktops
-@include media-lg {
-  .errorMessage {
-    font-size: 1rem;
-    margin-top: -2.5px;
   }
 }
