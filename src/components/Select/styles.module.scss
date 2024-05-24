@@ -1,0 +1,36 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 6px;
+  position: relative;
+  cursor: pointer;
+
+
+  .label {
+    font-weight: 500;
+    color: var(--black);
+    font-size: 12px;
+    cursor: pointer;
+    width: fit-content;
+    white-space: nowrap;
+  }
+
+  .errorMessage {
+    color: var(--red);
+    position: absolute;
+    bottom: -15px;
+    left: 4px;
+    font-size: 12px;
+    margin-top: 8px;
+    font-weight: 500;
+    visibility: hidden;
+    opacity: 0;
+    transition: visibility 0s, opacity 0.5s linear;
+  }
+
+  .showErrorMessage {
+    visibility: visible;
+    opacity: 1;
+  }
+}
