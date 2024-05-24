@@ -11,11 +11,14 @@
 
   &.textButton {
     color: var(--text);
-    font-size: 12px;
+    font-size: 14px;
     text-transform: none;
-    
+    padding: 0 10px !important;
+
     &:hover {
       border: none;
+      background-color: transparent;
+      color: var(--text);
     }
   }
 

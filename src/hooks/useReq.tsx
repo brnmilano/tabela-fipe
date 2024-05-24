@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import {
   Dispatch,
   ReactNode,
@@ -7,10 +8,17 @@ import {
   useEffect,
   useState,
 } from "react";
-import { carsBrands } from "@/constants/path";
+import {
+  carsBrandsPath,
+  fipeTableRoute,
+  modelsPath,
+  yearsPath,
+} from "@/constants/path";
 import { api } from "@/services";
 import { SelectOptionsProps, SingleSelectProps } from "@/types/select";
 import { useCommon } from "./useCommon";
+import { vehicleProps } from "@/types/vehicle";
+import { usePathname } from "next/navigation";
 
 interface useReqsProps {
   children: ReactNode;
@@ -31,33 +39,39 @@ interface ReqsContextData {
   yearSelected: SingleSelectProps;
   setYearSelected: Dispatch<SetStateAction<SingleSelectProps>>;
 
+  results: vehicleProps;
+  setResults: Dispatch<SetStateAction<vehicleProps>>;
+
   getBrands: () => void;
   getModels: () => void;
   getYears: () => void;
+  getResults: () => void;
 }
 
 export const ReqsContext = createContext({} as ReqsContextData);
 
 function ReqsProvider({ children }: useReqsProps) {
+  const pathname = usePathname();
+
   const { setLoading } = useCommon();
 
   const [brands, setBrands] = useState<SelectOptionsProps[]>([]);
   const [models, setModels] = useState<SelectOptionsProps[]>([]);
   const [years, setYears] = useState<SingleSelectProps[]>([]);
 
+  const [results, setResults] = useState<vehicleProps>({} as vehicleProps);
+
   const [brandSelected, setBrandSelected] = useState<SingleSelectProps>(null);
   const [modelSelected, setModelSelected] = useState<SingleSelectProps>(null);
   const [yearSelected, setYearSelected] = useState<SingleSelectProps>(null);
 
-  const brandsForSearchModel = brandSelected?.value;
-  const modelsForSearchYear = modelSelected?.value;
-
-  console.log(brandsForSearchModel);
-  console.log(modelsForSearchYear);
-
+  /**
+   * Função que busca as marcas de veículos disponíveis na API.
+   * Caso a requisição seja bem sucedida, formata o conteúdo e o adiciona no estado setBrands.
+   */
   async function getBrands() {
     api
-      .get(`${carsBrands}`)
+      .get(`${carsBrandsPath}`)
       .then((response) => {
         setLoading(false);
 
@@ -79,11 +93,14 @@ function ReqsProvider({ children }: useReqsProps) {
       });
   }
 
+  /**
+   * Função que busca os modelos de veículos disponíveis na API.
+   * Caso a requisição seja bem sucedida, formata o conteúdo e o adiciona no estado setModels.
+   */
   async function getModels() {
     api
-      .get(`/carros/marcas/${brandsForSearchModel}/modelos`)
+      .get(`${carsBrandsPath}/${brandSelected?.value}/${modelsPath}`)
       .then((response) => {
-        console.log("getModels", { response });
         const models = response.data.modelos;
 
         let modelsFormatted = models.map(
@@ -102,15 +119,17 @@ function ReqsProvider({ children }: useReqsProps) {
       });
   }
 
+  /**
+   * Função que busca os anos de veículos disponíveis na API.
+   * Caso a requisição seja bem sucedida, formata o conteúdo e o adiciona no estado setYears.
+   */
   async function getYears() {
     api
       .get(
-        `/carros/marcas/${brandsForSearchModel}/modelos/${modelsForSearchYear}/anos`
+        `${carsBrandsPath}/${brandSelected?.value}/${modelsPath}/${modelSelected?.value}/${yearsPath}`
       )
       .then((response) => {
-        const years = response.data.modelos;
-
-        console.log({ years });
+        const years = response.data;
 
         let yearsFormatted = years.map(
           (brand: { nome: string; codigo: string }) => {
@@ -128,21 +147,43 @@ function ReqsProvider({ children }: useReqsProps) {
       });
   }
 
-  useEffect(() => {
-    getBrands();
-  }, []);
+  /**
+   * Função que busca os resultados de veículos disponíveis na API.
+   * Caso a requisição seja bem sucedida, formata o conteúdo e o adiciona no estado setResults.
+   */
+  async function getResults() {
+    api
+      .get(
+        `${carsBrandsPath}/${brandSelected?.value}/${modelsPath}/${modelSelected?.value}/${yearsPath}/${yearSelected?.value}`
+      )
+      .then((response) => {
+        setResults(response.data);
+      })
+      .catch(() => {
+        setResults({} as vehicleProps);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }
 
   useEffect(() => {
-    if (brandsForSearchModel !== undefined) {
+    if (pathname === fipeTableRoute) {
+      getBrands();
+    }
+  }, [pathname === fipeTableRoute]);
+
+  useEffect(() => {
+    if (brandSelected) {
       getModels();
     }
-  }, [brandsForSearchModel]);
+  }, [brandSelected]);
 
   useEffect(() => {
-    if (modelsForSearchYear !== undefined) {
+    if (modelSelected) {
       getYears();
     }
-  }, [modelsForSearchYear]);
+  }, [modelSelected]);
 
   return (
     <ReqsContext.Provider
@@ -161,9 +202,13 @@ function ReqsProvider({ children }: useReqsProps) {
         yearSelected,
         setYearSelected,
 
+        results,
+        setResults,
+
         getBrands,
         getModels,
         getYears,
+        getResults,
       }}
     >
       {children}

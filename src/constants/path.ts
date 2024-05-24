@@ -1,7 +1,8 @@
 //API endpoints
+export const carsBrandsPath = "/carros/marcas";
+export const modelsPath = "modelos";
+export const yearsPath = "anos";
 
-export const carsBrands = "/carros/marcas";
-export const motorcycleBrands = "/motos/marcas";
-export const trucksBrands = "/caminhoes/marcas";
-
-export const carsModels = "/carros/marcas/59/modelos";
+//Application routes
+export const fipeTableRoute = "/tabela-fipe";
+export const resultsRoute = "/resultados";

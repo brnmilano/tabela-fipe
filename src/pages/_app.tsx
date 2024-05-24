@@ -4,6 +4,8 @@ import { ReqsProvider } from "@/hooks/useReq";
 import { CommonProvider } from "@/hooks/useCommon";
 import "@/styles/globals.scss";
 import "@/styles/index.scss";
+import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer } from "react-toastify";
 
 const inter = Roboto({ weight: "400", subsets: ["latin"] });
 
@@ -12,6 +14,7 @@ export default function App({ Component, pageProps }: AppProps) {
     <main className={inter.className}>
       <CommonProvider>
         <ReqsProvider>
+          <ToastContainer autoClose={2000} theme="colored" />
           <Component {...pageProps} />
         </ReqsProvider>
       </CommonProvider>
