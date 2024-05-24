@@ -1,3 +1,5 @@
+@import "../../styles/breakpoints";
+
 .container {
   height: 100vh;
   display: flex;
@@ -12,16 +14,18 @@
     justify-content: center;
     align-items: center;
     gap: 20px;
-    width: 900px;
-
+    width: 100%;
+    max-width: 300px;
     padding: 20px;
     border-radius: 8px;
     background-color: var(--backgroundSecondary);
-    
+
     .infosDetails {
       display: flex;
       align-items: center;
       font-weight: 600;
+      line-height: 30px;
+      text-align: center;
     }
 
     .priceDetails {
@@ -47,6 +51,15 @@
       svg {
         margin-top: 10px;
       }
+    }
+  }
+}
+
+// Estilos para tablets
+@include media-md {
+  .container {
+    .content {
+      max-width: 900px;
     }
   }
 }
