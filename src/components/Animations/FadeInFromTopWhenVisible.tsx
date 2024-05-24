@@ -1,7 +1,7 @@
-import React from "react";
 import { motion, useAnimation } from "framer-motion";
 import { useEffect } from "react";
 import { useInView } from "react-intersection-observer";
+import React from "react";
 
 interface Props {
   delay?: number;
@@ -9,7 +9,7 @@ interface Props {
 
 export default function FadeInFromTopWhenVisible({
   children,
-  delay = 0.2
+  delay = 0.2,
 }: React.PropsWithChildren<Props>) {
   const controls = useAnimation();
   const [ref, inView] = useInView();
@@ -29,12 +29,12 @@ export default function FadeInFromTopWhenVisible({
       variants={{
         hidden: {
           opacity: 0,
-          y: -50
+          y: -50,
         },
         visible: {
           opacity: 1,
-          y: 0
-        }
+          y: 0,
+        },
       }}
     >
       {children}

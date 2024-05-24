@@ -3,7 +3,6 @@ import {
   CircularProgress,
   ButtonProps as MaterialButtonProps,
 } from "@mui/material";
-
 import clsx from "clsx";
 import styles from "./styles.module.scss";
 

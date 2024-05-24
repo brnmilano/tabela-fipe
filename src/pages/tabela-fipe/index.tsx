@@ -12,20 +12,49 @@ import { ReactSelect } from "@/components/Select";
 import { SelectOptionsProps } from "@/types/select";
 import { errorsMessageProps } from "@/types/inputErrors";
 import { useRouter } from "next/router";
-import { resultsRoute } from "@/constants/path";
+import { carsBrandsPath, resultsRoute } from "@/constants/path";
 import { vehicleProps } from "@/types/vehicle";
+import { api } from "@/services";
+import { AxiosError } from "axios";
 import FadeInFromTopWhenVisible from "@/components/Animations/FadeInFromTopWhenVisible";
 import styles from "./styles.module.scss";
-import { toast } from "react-toastify";
 
-export default function FipeTable() {
-  const router = useRouter();
+interface Brand {
+  brandsFormatted: SelectOptionsProps[];
+}
 
-  const { loading, setLoading } = useCommon();
+export const getServerSideProps = async () => {
+  let response = await api
+    .get(carsBrandsPath)
+    .then((response) => {
+      return response.data;
+    })
+    .catch((error: AxiosError) => {
+      return error;
+    });
+
+  if (!response) return;
+
+  let brandsFormatted = response.map(
+    (brand: { nome: string; codigo: string }) => {
+      return {
+        label: brand.nome,
+        value: brand.codigo,
+      };
+    }
+  );
+
+  return {
+    props: {
+      brandsFormatted,
+    },
+  };
+};
+
+export default function FipeTable(props: Brand) {
+  const brandsOptions = props.brandsFormatted;
 
   const {
-    brands,
-    setBrands,
     models,
     setModels,
     years,
@@ -40,15 +69,42 @@ export default function FipeTable() {
     getResults,
   } = useReqs();
 
+  const { loading, setLoading } = useCommon();
+
+  const router = useRouter();
+
   const [inputErrors, setInputErrors] = useState<errorsMessageProps[]>([]);
 
   let currentErrors: errorsMessageProps[] = [];
 
   /**
+   * Lida com a seleção e limpeza dos campos do componente Select.
+   * @param value O valor selecionado no componente Select.
+   * @param setField Atualizar o estado do campo selecionado.
+   * @param clearFields Limpa os estados dos outros campos.
+   */
+  const handleSelect = (
+    value: SelectOptionsProps,
+    setField: any,
+    clearFields: any
+  ) => {
+    setField(value);
+
+    clearFields.forEach((clearField: any) => {
+      clearField(null);
+    });
+
+    setInputErrors(
+      inputErrors.filter((item) => item.field !== "brandSelected")
+    );
+  };
+
+  /**
    * Verifica se os campos obrigatórios foram preenchidos e chama a função getResults para buscar os resultados.
+   *
    * Caso algum campo não tenha sido preenchido, exibe uma mensagem de erro no campo correspondente.
    */
-  const handleVerifySelects = async () => {
+  const handleVerifySelects = () => {
     setInputErrors([]);
 
     setLoading(true);
@@ -72,8 +128,6 @@ export default function FipeTable() {
         return [...oldValue, ...currentErrors];
       });
 
-      toast.error("Preencha todos os campos obrigatórios!");
-
       return setLoading(false);
     }
 
@@ -84,39 +138,15 @@ export default function FipeTable() {
     router.push(resultsRoute);
   };
 
-  /**
-   * Lida com a seleção e limpeza dos campos do componente Select.
-   * @param value O valor selecionado no componente Select.
-   * @param setField A função para atualizar o estado do campo selecionado.
-   * @param clearFields Um array de funções para limpar os estados dos outros campos.
-   */
-  const handleSelect = (value: any, setField: any, clearFields: any) => {
-    setField(value);
-
-    clearFields.forEach((clearField: any) => {
-      clearField(null);
-    });
-
-    setInputErrors(
-      inputErrors.filter((item) => item.field !== "brandSelected")
-    );
-
-    setInputErrors(
-      inputErrors.filter((item) => item.field !== "modelSelected")
-    );
-
-    setInputErrors(inputErrors.filter((item) => item.field !== "yearSelected"));
-  };
-
   useEffect(() => {
     // Limpa os campos selecionados e os resultados da pesquisa.
-    setBrands([]);
     setBrandSelected(null);
     setModels([]);
     setModelSelected(null);
     setYears([]);
     setYearSelected(null);
     setResults({} as vehicleProps);
+    setLoading(false);
   }, []);
 
   return (
@@ -134,7 +164,7 @@ export default function FipeTable() {
               label="Marca"
               name="marca"
               placeholder="Selecione"
-              options={brands as SelectOptionsProps[]}
+              options={brandsOptions}
               defaultValue={brandSelected}
               onSelect={(value) =>
                 handleSelect(value, setBrandSelected, [
@@ -158,7 +188,7 @@ export default function FipeTable() {
               label="Modelo"
               name="modelo"
               placeholder="Selecione"
-              options={models as SelectOptionsProps[]}
+              options={models}
               defaultValue={modelSelected}
               onSelect={(value) =>
                 handleSelect(value, setModelSelected, [setYearSelected])
@@ -179,7 +209,7 @@ export default function FipeTable() {
               label="Ano"
               name="ano"
               placeholder="Selecione"
-              options={years as SelectOptionsProps[]}
+              options={years}
               defaultValue={yearSelected}
               onSelect={(value) => handleSelect(value, setYearSelected, [])}
               isDisabled={!modelSelected || loading}

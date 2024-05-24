@@ -8,29 +8,21 @@ import {
   useEffect,
   useState,
 } from "react";
-import {
-  carsBrandsPath,
-  fipeTableRoute,
-  modelsPath,
-  yearsPath,
-} from "@/constants/path";
-import { api } from "@/services";
+import { carsBrandsPath, modelsPath, yearsPath } from "@/constants/path";
 import { SelectOptionsProps, SingleSelectProps } from "@/types/select";
+import { api } from "@/services";
 import { useCommon } from "./useCommon";
 import { vehicleProps } from "@/types/vehicle";
-import { usePathname } from "next/navigation";
 
 interface useReqsProps {
   children: ReactNode;
 }
 
 interface ReqsContextData {
-  brands: SelectOptionsProps[];
-  setBrands: Dispatch<SetStateAction<SelectOptionsProps[]>>;
   models: SelectOptionsProps[];
   setModels: Dispatch<SetStateAction<SelectOptionsProps[]>>;
-  years: SingleSelectProps[];
-  setYears: Dispatch<SetStateAction<SingleSelectProps[]>>;
+  years: SelectOptionsProps[];
+  setYears: Dispatch<SetStateAction<SelectOptionsProps[]>>;
 
   brandSelected: SingleSelectProps;
   setBrandSelected: Dispatch<SetStateAction<SingleSelectProps>>;
@@ -42,7 +34,7 @@ interface ReqsContextData {
   results: vehicleProps;
   setResults: Dispatch<SetStateAction<vehicleProps>>;
 
-  getBrands: () => void;
+  //getBrands: () => void;
   getModels: () => void;
   getYears: () => void;
   getResults: () => void;
@@ -51,13 +43,10 @@ interface ReqsContextData {
 export const ReqsContext = createContext({} as ReqsContextData);
 
 function ReqsProvider({ children }: useReqsProps) {
-  const pathname = usePathname();
-
   const { setLoading } = useCommon();
 
-  const [brands, setBrands] = useState<SelectOptionsProps[]>([]);
   const [models, setModels] = useState<SelectOptionsProps[]>([]);
-  const [years, setYears] = useState<SingleSelectProps[]>([]);
+  const [years, setYears] = useState<SelectOptionsProps[]>([]);
 
   const [results, setResults] = useState<vehicleProps>({} as vehicleProps);
 
@@ -66,36 +55,11 @@ function ReqsProvider({ children }: useReqsProps) {
   const [yearSelected, setYearSelected] = useState<SingleSelectProps>(null);
 
   /**
-   * Função que busca as marcas de veículos disponíveis na API.
-   * Caso a requisição seja bem sucedida, formata o conteúdo e o adiciona no estado setBrands.
-   */
-  async function getBrands() {
-    api
-      .get(`${carsBrandsPath}`)
-      .then((response) => {
-        setLoading(false);
-
-        const content = response.data;
-
-        let contentFormatted = content.map(
-          (brand: { nome: string; codigo: string }) => {
-            return {
-              label: brand.nome,
-              value: brand.codigo,
-            };
-          }
-        );
-
-        setBrands(contentFormatted);
-      })
-      .catch(() => {
-        setBrands([]);
-      });
-  }
-
-  /**
    * Função que busca os modelos de veículos disponíveis na API.
+   *
    * Caso a requisição seja bem sucedida, formata o conteúdo e o adiciona no estado setModels.
+   *
+   * Caso a requisição falhe, seta o estado setModels como um array vazio.
    */
   async function getModels() {
     api
@@ -121,7 +85,10 @@ function ReqsProvider({ children }: useReqsProps) {
 
   /**
    * Função que busca os anos de veículos disponíveis na API.
+   *
    * Caso a requisição seja bem sucedida, formata o conteúdo e o adiciona no estado setYears.
+   *
+   * Caso a requisição falhe, seta o estado setYears como um array vazio.
    */
   async function getYears() {
     api
@@ -149,7 +116,10 @@ function ReqsProvider({ children }: useReqsProps) {
 
   /**
    * Função que busca os resultados de veículos disponíveis na API.
+   *
    * Caso a requisição seja bem sucedida, formata o conteúdo e o adiciona no estado setResults.
+   *
+   * Caso a requisição falhe, seta o estado setResults como um objeto vazio.
    */
   async function getResults() {
     api
@@ -168,12 +138,6 @@ function ReqsProvider({ children }: useReqsProps) {
   }
 
   useEffect(() => {
-    if (pathname === fipeTableRoute) {
-      getBrands();
-    }
-  }, [pathname === fipeTableRoute]);
-
-  useEffect(() => {
     if (brandSelected) {
       getModels();
     }
@@ -188,8 +152,6 @@ function ReqsProvider({ children }: useReqsProps) {
   return (
     <ReqsContext.Provider
       value={{
-        brands,
-        setBrands,
         models,
         setModels,
         years,
@@ -205,7 +167,7 @@ function ReqsProvider({ children }: useReqsProps) {
         results,
         setResults,
 
-        getBrands,
+        //getBrands,
         getModels,
         getYears,
         getResults,

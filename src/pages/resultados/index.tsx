@@ -1,15 +1,18 @@
-import { resultsDetailsFooterText, resultsDetailsText } from "@/constants/messages";
+import {
+  resultsDetailsFooterText,
+  resultsDetailsText,
+} from "@/constants/messages";
 import { useReqs } from "@/hooks/useReq";
 import { Button } from "@/components/Button";
 import { useRouter } from "next/router";
-import { fipeTableRoute, resultsRoute } from "@/constants/path";
+import { fipeTableRoute } from "@/constants/path";
 import styles from "./styles.module.scss";
 import FadeInFromTopWhenVisible from "@/components/Animations/FadeInFromTopWhenVisible";
 
 export default function Results() {
-  const router = useRouter();
-
   const { results } = useReqs();
+  
+  const router = useRouter();
 
   const handleGoBack = () => {
     router.push(fipeTableRoute);
