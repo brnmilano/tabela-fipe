@@ -92,10 +92,6 @@ h3 {
   }
 }
 
-// Estilos para desktops
-@include media-lg {
-}
-
 button {
   &:hover {
     filter: opacity(0.8);
