@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import {
   Dispatch,
   ReactNode,
@@ -8,41 +7,42 @@ import {
   useEffect,
   useState,
 } from "react";
-import { carsBrandsPath, modelsPath, yearsPath } from "@/constants/path";
+import {
+  carsBrandsPath,
+  modelsPath,
+  resultsPath,
+  yearsPath,
+} from "@/constants/path";
 import { SelectOptionsProps, SingleSelectProps } from "@/types/select";
 import { api } from "@/services";
 import { useCommon } from "./useCommon";
 import { vehicleProps } from "@/types/vehicle";
 
-interface useReqsProps {
+interface useRequestsProps {
   children: ReactNode;
 }
 
-interface ReqsContextData {
+interface RequestsContextData {
   models: SelectOptionsProps[];
   setModels: Dispatch<SetStateAction<SelectOptionsProps[]>>;
   years: SelectOptionsProps[];
   setYears: Dispatch<SetStateAction<SelectOptionsProps[]>>;
-
   brandSelected: SingleSelectProps;
   setBrandSelected: Dispatch<SetStateAction<SingleSelectProps>>;
   modelSelected: SingleSelectProps;
   setModelSelected: Dispatch<SetStateAction<SingleSelectProps>>;
   yearSelected: SingleSelectProps;
   setYearSelected: Dispatch<SetStateAction<SingleSelectProps>>;
-
   results: vehicleProps;
   setResults: Dispatch<SetStateAction<vehicleProps>>;
-
-  //getBrands: () => void;
   getModels: () => void;
   getYears: () => void;
   getResults: () => void;
 }
 
-export const ReqsContext = createContext({} as ReqsContextData);
+export const RequestsContext = createContext({} as RequestsContextData);
 
-function ReqsProvider({ children }: useReqsProps) {
+function RequestsProvider({ children }: useRequestsProps) {
   const { setLoading } = useCommon();
 
   const [models, setModels] = useState<SelectOptionsProps[]>([]);
@@ -62,25 +62,27 @@ function ReqsProvider({ children }: useReqsProps) {
    * Caso a requisição falhe, seta o estado setModels como um array vazio.
    */
   async function getModels() {
-    api
-      .get(`${carsBrandsPath}/${brandSelected?.value}/${modelsPath}`)
-      .then((response) => {
-        const models = response.data.modelos;
+    if (brandSelected) {
+      api
+        .get(modelsPath(brandSelected.value))
+        .then((response) => {
+          const models = response.data.modelos;
 
-        let modelsFormatted = models.map(
-          (brand: { nome: string; codigo: string }) => {
-            return {
-              label: brand.nome,
-              value: brand.codigo,
-            };
-          }
-        );
+          let modelsFormatted = models.map(
+            (brand: { nome: string; codigo: string }) => {
+              return {
+                label: brand.nome,
+                value: brand.codigo,
+              };
+            }
+          );
 
-        setModels(modelsFormatted);
-      })
-      .catch(() => {
-        setModels([]);
-      });
+          setModels(modelsFormatted);
+        })
+        .catch(() => {
+          setModels([]);
+        });
+    }
   }
 
   /**
@@ -91,27 +93,27 @@ function ReqsProvider({ children }: useReqsProps) {
    * Caso a requisição falhe, seta o estado setYears como um array vazio.
    */
   async function getYears() {
-    api
-      .get(
-        `${carsBrandsPath}/${brandSelected?.value}/${modelsPath}/${modelSelected?.value}/${yearsPath}`
-      )
-      .then((response) => {
-        const years = response.data;
+    if (brandSelected && modelSelected) {
+      api
+        .get(yearsPath(brandSelected.value, modelSelected.value))
+        .then((response) => {
+          const years = response.data;
 
-        let yearsFormatted = years.map(
-          (brand: { nome: string; codigo: string }) => {
-            return {
-              label: brand.nome,
-              value: brand.codigo,
-            };
-          }
-        );
+          let yearsFormatted = years.map(
+            (brand: { nome: string; codigo: string }) => {
+              return {
+                label: brand.nome,
+                value: brand.codigo,
+              };
+            }
+          );
 
-        setYears(yearsFormatted);
-      })
-      .catch(() => {
-        setYears([]);
-      });
+          setYears(yearsFormatted);
+        })
+        .catch(() => {
+          setYears([]);
+        });
+    }
   }
 
   /**
@@ -122,64 +124,68 @@ function ReqsProvider({ children }: useReqsProps) {
    * Caso a requisição falhe, seta o estado setResults como um objeto vazio.
    */
   async function getResults() {
-    api
-      .get(
-        `${carsBrandsPath}/${brandSelected?.value}/${modelsPath}/${modelSelected?.value}/${yearsPath}/${yearSelected?.value}`
-      )
-      .then((response) => {
-        setResults(response.data);
-      })
-      .catch(() => {
-        setResults({} as vehicleProps);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+    if (brandSelected && modelSelected && yearSelected) {
+      api
+        .get(
+          resultsPath(
+            brandSelected.value,
+            modelSelected.value,
+            yearSelected.value
+          )
+        )
+        .then((response) => {
+          setResults(response.data);
+        })
+        .catch(() => {
+          setResults({} as vehicleProps);
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    }
   }
 
   useEffect(() => {
     if (brandSelected) {
       getModels();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [brandSelected]);
 
   useEffect(() => {
     if (modelSelected) {
       getYears();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [modelSelected]);
 
   return (
-    <ReqsContext.Provider
+    <RequestsContext.Provider
       value={{
         models,
         setModels,
         years,
         setYears,
-
         brandSelected,
         setBrandSelected,
         modelSelected,
         setModelSelected,
         yearSelected,
         setYearSelected,
-
         results,
         setResults,
-
-        //getBrands,
         getModels,
         getYears,
         getResults,
       }}
     >
       {children}
-    </ReqsContext.Provider>
+    </RequestsContext.Provider>
   );
 }
 
-function useReqs() {
-  return useContext(ReqsContext);
+function useRequests() {
+  return useContext(RequestsContext);
 }
 
-export { useReqs, ReqsProvider };
+export { useRequests, RequestsProvider };
