@@ -1,11 +1,6 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-import {
-  fipeTableDescription,
-  fipeTableTitle,
-  requiredField,
-} from "@/constants/messages";
+import { requiredField } from "@/constants/messages";
 import { Button } from "@/components/Button";
-import { useReqs } from "@/hooks/useReq";
+import { useRequests } from "@/hooks/useRequests";
 import { useCommon } from "@/hooks/useCommon";
 import { useEffect, useState } from "react";
 import { ReactSelect } from "@/components/Select";
@@ -23,34 +18,6 @@ interface Brand {
   brandsFormatted: SelectOptionsProps[];
 }
 
-export const getServerSideProps = async () => {
-  let response = await api
-    .get(carsBrandsPath)
-    .then((response) => {
-      return response.data;
-    })
-    .catch((error: AxiosError) => {
-      return error;
-    });
-
-  if (!response) return;
-
-  let brandsFormatted = response.map(
-    (brand: { nome: string; codigo: string }) => {
-      return {
-        label: brand.nome,
-        value: brand.codigo,
-      };
-    }
-  );
-
-  return {
-    props: {
-      brandsFormatted,
-    },
-  };
-};
-
 export default function FipeTable(props: Brand) {
   const brandsOptions = props.brandsFormatted;
 
@@ -67,15 +34,13 @@ export default function FipeTable(props: Brand) {
     setYearSelected,
     setResults,
     getResults,
-  } = useReqs();
+  } = useRequests();
 
   const { loading, setLoading } = useCommon();
 
   const router = useRouter();
 
   const [inputErrors, setInputErrors] = useState<errorsMessageProps[]>([]);
-
-  let currentErrors: errorsMessageProps[] = [];
 
   /**
    * Lida com a seleção e limpeza dos campos do componente Select.
@@ -108,6 +73,8 @@ export default function FipeTable(props: Brand) {
     setInputErrors([]);
 
     setLoading(true);
+
+    const currentErrors: errorsMessageProps[] = [];
 
     if (!brandSelected || brandSelected.value === undefined) {
       currentErrors.push({ field: "brandSelected", message: requiredField });
@@ -147,15 +114,16 @@ export default function FipeTable(props: Brand) {
     setYearSelected(null);
     setResults({} as vehicleProps);
     setLoading(false);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
     <FadeInFromTopWhenVisible>
       <div className={styles.container}>
         <div className={styles.headerWrapper}>
-          <h1>{fipeTableTitle}</h1>
+          <h1>Tabela fipe</h1>
 
-          <p>{fipeTableDescription}</p>
+          <p>Consulte o valor de um veículo de forma gratuita</p>
         </div>
 
         <div className={styles.content}>
@@ -239,3 +207,24 @@ export default function FipeTable(props: Brand) {
     </FadeInFromTopWhenVisible>
   );
 }
+
+export const getServerSideProps = async () => {
+  const response = await api.get<{ nome: string; codigo: string }[]>(
+    carsBrandsPath
+  );
+
+  if (!response) return;
+
+  let brandsFormatted = response.data.map((brand) => {
+    return {
+      label: brand.nome,
+      value: brand.codigo,
+    };
+  });
+
+  return {
+    props: {
+      brandsFormatted,
+    },
+  };
+};

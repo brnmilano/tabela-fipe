@@ -1,22 +1,12 @@
-import {
-  resultsDetailsFooterText,
-  resultsDetailsText,
-} from "@/constants/messages";
-import { useReqs } from "@/hooks/useReq";
+import { useRequests } from "@/hooks/useRequests";
 import { Button } from "@/components/Button";
-import { useRouter } from "next/router";
 import { fipeTableRoute } from "@/constants/path";
 import styles from "./styles.module.scss";
 import FadeInFromTopWhenVisible from "@/components/Animations/FadeInFromTopWhenVisible";
+import Link from "next/link";
 
 export default function Results() {
-  const { results } = useReqs();
-  
-  const router = useRouter();
-
-  const handleGoBack = () => {
-    router.push(fipeTableRoute);
-  };
+  const { results } = useRequests();
 
   return (
     <FadeInFromTopWhenVisible>
@@ -24,7 +14,7 @@ export default function Results() {
         <div className={styles.content}>
           <div className={styles.infosDetails}>
             <h1>
-              {resultsDetailsText} {results?.Marca ?? "-"}{" "}
+              Tabela fipe Preço: {results?.Marca ?? "-"}{" "}
               {results?.Modelo ?? "-"} {results?.AnoModelo ?? "-"}
             </h1>
           </div>
@@ -34,13 +24,13 @@ export default function Results() {
           </div>
 
           <div className={styles.priceText}>
-            <p>{resultsDetailsFooterText}</p>
+            <p>Este é o preço de compra do veículo</p>
           </div>
 
           <div className={styles.backButton}>
-            <Button onClick={handleGoBack} variant="text">
-              Nova consulta
-            </Button>
+            <Link href={fipeTableRoute}>
+              <Button variant="text">Nova consulta</Button>
+            </Link>
           </div>
         </div>
       </div>
