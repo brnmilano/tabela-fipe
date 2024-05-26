@@ -34,6 +34,6 @@
   npm run lint
   ```
 
-- O deploy do projeto foi feito na Vercel e você pode verificá-lo no seguinte link::
+- O deploy do projeto foi feito na Vercel e você pode verificá-lo no seguinte link:
   
   ### **[Tabela Fipe](https://tabela-fipe-omega.vercel.app/tabela-fipe)**
