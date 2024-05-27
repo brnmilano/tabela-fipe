@@ -1,7 +1,6 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 import { RequestsProvider } from "@/hooks/useRequests";
 import { CommonProvider } from "@/hooks/useCommon";
-import { describe } from "node:test";
 import FipeTable from ".";
 
 jest.mock("next/router", () => ({
@@ -25,58 +24,56 @@ global.IntersectionObserver = class IntersectionObserver {
   takeRecords = () => [];
 };
 
-describe("FipeTable Testing group", () => {
-  it("Tabela Fipe page should have Templates", () => {
-    render(
-      <CommonProvider>
-        <RequestsProvider>
-          <FipeTable />
-        </RequestsProvider>
-      </CommonProvider>
-    );
+it("Tabela Fipe page should have Templates", () => {
+  render(
+    <CommonProvider>
+      <RequestsProvider>
+        <FipeTable />
+      </RequestsProvider>
+    </CommonProvider>
+  );
 
-    const templatesTitle = screen.getByText("Tabela fipe");
-    expect(templatesTitle).toBeInTheDocument();
+  const templatesTitle = screen.getByText("Tabela fipe");
+  expect(templatesTitle).toBeInTheDocument();
 
-    const templatesSubtitle = screen.getByText(
-      "Consulte o valor de um veículo de forma gratuita"
-    );
-    expect(templatesSubtitle).toBeInTheDocument();
+  const templatesSubtitle = screen.getByText(
+    "Consulte o valor de um veículo de forma gratuita"
+  );
+  expect(templatesSubtitle).toBeInTheDocument();
 
-    const templateButtonText = screen.getByText("Consultar preço");
-    expect(templateButtonText).toBeInTheDocument();
-  });
+  const templateButtonText = screen.getByText("Consultar preço");
+  expect(templateButtonText).toBeInTheDocument();
+});
 
-  it("Tabela Fipe page should have Selects", () => {
-    render(
-      <CommonProvider>
-        <RequestsProvider>
-          <FipeTable />
-        </RequestsProvider>
-      </CommonProvider>
-    );
+it("Tabela Fipe page should have Selects", () => {
+  render(
+    <CommonProvider>
+      <RequestsProvider>
+        <FipeTable />
+      </RequestsProvider>
+    </CommonProvider>
+  );
 
-    const selectElements = screen.getAllByRole("combobox");
-    expect(selectElements).toHaveLength(1);
+  const selectElements = screen.getAllByRole("combobox");
+  expect(selectElements).toHaveLength(1);
 
-    const select = screen.getByRole("combobox");
-    expect(select).toBeInTheDocument();
-  });
+  const select = screen.getByRole("combobox");
+  expect(select).toBeInTheDocument();
+});
 
-  it("Tabela Fipe page should have Buttons", () => {
-    const { getByRole } = render(
-      <CommonProvider>
-        <RequestsProvider>
-          <FipeTable />
-        </RequestsProvider>
-      </CommonProvider>
-    );
+it("Tabela Fipe page should have Buttons", () => {
+  const { getByRole } = render(
+    <CommonProvider>
+      <RequestsProvider>
+        <FipeTable />
+      </RequestsProvider>
+    </CommonProvider>
+  );
 
-    const button = getByRole("button");
-    fireEvent.click(button);
+  const button = getByRole("button");
+  fireEvent.click(button);
 
-    const buttonElement = screen.getAllByRole("button");
-    expect(buttonElement).toHaveLength(1);
-    expect(button).toBeInTheDocument();
-  });
+  const buttonElement = screen.getAllByRole("button");
+  expect(buttonElement).toHaveLength(1);
+  expect(button).toBeInTheDocument();
 });
