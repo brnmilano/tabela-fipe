@@ -1,6 +1,6 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 import { RequestsProvider } from "@/hooks/useRequests";
-import Results from ".";
+import Results from "@/pages/resultados";
 
 jest.mock("next/router", () => ({
   useRouter: () => ({
