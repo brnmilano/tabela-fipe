@@ -1,8 +1,8 @@
 import type { AppProps } from "next/app";
 import { Roboto } from "next/font/google";
 import { CommonProvider } from "@/hooks/useCommon";
-import "@/styles/index.scss";
 import { RequestsProvider } from "@/hooks/useRequests";
+import "@/styles/index.scss";
 
 const inter = Roboto({ weight: "400", subsets: ["latin"] });
 

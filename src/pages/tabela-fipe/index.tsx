@@ -10,12 +10,11 @@ import { useRouter } from "next/router";
 import { carsBrandsPath, resultsRoute } from "@/constants/path";
 import { vehicleProps } from "@/types/vehicle";
 import { api } from "@/services";
-import { AxiosError } from "axios";
 import FadeInFromTopWhenVisible from "@/components/Animations/FadeInFromTopWhenVisible";
 import styles from "./styles.module.scss";
 
 interface Brand {
-  brandsFormatted: SelectOptionsProps[];
+  brandsFormatted?: SelectOptionsProps[];
 }
 
 export default function FipeTable(props: Brand) {
@@ -114,7 +113,7 @@ export default function FipeTable(props: Brand) {
     setYearSelected(null);
     setResults({} as vehicleProps);
     setLoading(false);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

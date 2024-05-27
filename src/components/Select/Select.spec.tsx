@@ -2,7 +2,7 @@ import { render } from "@testing-library/react";
 import { ReactSelect } from "@/components/Select";
 import "@testing-library/jest-dom";
 
-describe("ReactSelect", () => {
+describe("Select Testing Group", () => {
   const brandsOptions = [
     { label: "Brand 1", value: 1 },
     { label: "Brand 2", value: 2 },
