@@ -34,6 +34,12 @@
   npm run lint
   ```
 
+  Iniciar o modo Test em tempo real. Após rodar o comando, aperte as W e A no seu terminal para verificar os testes:
+
+  ```
+  npm run test
+  ```
+
 - O deploy do projeto foi feito na Vercel e você pode verificá-lo no seguinte link:
-  
+
   ### **[Tabela Fipe](https://tabela-fipe-omega.vercel.app/tabela-fipe)**
