@@ -2,6 +2,11 @@
 
 ## Iniciando o projeto
 
+- Verifique se você está na branch principal do projeto, que é a **main**, caso contrário, digite o comando no terminal:
+  ```
+  git checkout main
+  ```
+
 - Para iniciar o projeto, garanta que você possui uma versão atualizada do [npm](https://www.npmjs.com/). Após isso, instale as dependências rodando no terminal o seguinte comando:
 
   ```
@@ -34,7 +39,7 @@
   npm run lint
   ```
 
-  Iniciar o modo Test em tempo real. Após rodar o comando, aperte as W e A no seu terminal para verificar os testes:
+  Iniciar o modo Test em tempo real. Após rodar o comando, aperte W ou A no seu terminal para verificar os testes:
 
   ```
   npm run test
