@@ -1,7 +1,7 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 import { RequestsProvider } from "@/hooks/useRequests";
 import { CommonProvider } from "@/hooks/useCommon";
-import FipeTable from ".";
+import FipeTable from "@/pages/tabela-fipe";
 
 jest.mock("next/router", () => ({
   useRouter: () => ({
