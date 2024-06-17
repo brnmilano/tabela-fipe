@@ -207,6 +207,13 @@ export default function FipeTable(props: Brand) {
   );
 }
 
+/**
+ * Esta função é uma função do lado do servidor que busca as marcas de veículos disponíveis na API da tabela FIPE.
+ *
+ * Ela retorna um array de objetos, onde cada objeto representa uma marca de veículo com um rótulo e um valor.
+ *
+ * @returns {Array<{ label: string, value: string }>} brandsFormatted - Um array de objetos, onde cada objeto tem um rótulo (nome da marca) e um valor (código da marca).
+ */
 export const getServerSideProps = async () => {
   const response = await api.get<{ nome: string; codigo: string }[]>(
     carsBrandsPath
